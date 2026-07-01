@@ -5,6 +5,13 @@ import re
 from datetime import date
 from typing import Any
 
+from langchain.agents import create_agent
+from langchain_nebius import ChatNebius
+
+from agent.streaming import console, stream_agent
+
+PRIMARY_MODEL = "moonshotai/Kimi-K2.6"
+FALLBACK_MODEL = "deepseek-ai/DeepSeek-V4-Pro"
 
 JSON_TRAILER_RE = re.compile(
     r"```json\s*(\{.*?\})\s*```\s*$",
@@ -55,3 +62,30 @@ End your final answer with a fenced JSON trailer:
 {{"concepts": ["..."], "style_notes": ["..."]}}
 ```
 """
+
+
+def build_agent(*, system_prompt: str, tools: list[object], model: str) -> Any:
+    """Build LangChain agent with Nebius chat model."""
+    chat = ChatNebius(model=model, streaming=True)
+    return create_agent(model=chat, tools=tools, system_prompt=system_prompt)
+
+
+def run_agent_with_fallback(
+    *,
+    system_prompt: str,
+    tools: list[object],
+    model: str,
+    question: str,
+) -> str:
+    """Run agent; on provider error retry once with FALLBACK_MODEL."""
+    try:
+        agent = build_agent(system_prompt=system_prompt, tools=tools, model=model)
+        return stream_agent(agent, question)
+    except Exception as exc:
+        if model == FALLBACK_MODEL:
+            raise
+        console.print(
+            f"[dim yellow]Primary model unavailable ({exc}), falling back to {FALLBACK_MODEL}[/dim yellow]"
+        )
+        agent = build_agent(system_prompt=system_prompt, tools=tools, model=FALLBACK_MODEL)
+        return stream_agent(agent, question)

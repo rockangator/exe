@@ -30,7 +30,7 @@ def is_tracing_enabled() -> bool:
     return _tracing_enabled
 
 
-def traceable(name: str, **metadata: object) -> Callable[[F], F]:
+def traceable(name: str, **kwargs: object) -> Callable[[F], F]:
     """Decorator wrapping langsmith @traceable when available, else identity."""
 
     def identity(fn: F) -> F:
@@ -41,4 +41,4 @@ def traceable(name: str, **metadata: object) -> Callable[[F], F]:
 
     from langsmith import traceable as ls_traceable
 
-    return ls_traceable(name=name, metadata=metadata)  # type: ignore[return-value]
+    return ls_traceable(name=name, **kwargs)  # type: ignore[return-value]

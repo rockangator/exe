@@ -8,10 +8,11 @@ from typing import Any
 from langchain.agents import create_agent
 from langchain_nebius import ChatNebius
 
+from agent.models import SourceRecord
 from agent.streaming import console, stream_agent
 
-PRIMARY_MODEL = "moonshotai/Kimi-K2.6"
-FALLBACK_MODEL = "deepseek-ai/DeepSeek-V4-Pro"
+PRIMARY_MODEL = "deepseek-ai/DeepSeek-V4-Pro"
+FALLBACK_MODEL = "moonshotai/Kimi-K2.6"
 
 JSON_TRAILER_RE = re.compile(
     r"```json\s*(\{.*?\})\s*```\s*$",
@@ -34,16 +35,29 @@ def build_system_prompt(
     today: str | None = None,
     style: str = "",
     glossary: list[str] | None = None,
+    sources: list[SourceRecord] | None = None,
     illustrate: bool = True,
 ) -> str:
-    """Assemble system prompt with date, memory, Tavily rules, and article contract."""
+    """Assemble system prompt with date, memory, sources, Tavily rules, and article contract."""
     today = today or date.today().isoformat()
     glossary = glossary or []
+    sources = sources or []
     glossary_block = ", ".join(glossary) if glossary else "none yet"
     illustration_rule = (
         "Generate 1-3 illustrations via the illustrate tool; embed paths in the article."
         if illustrate
         else "Do not call illustrate."
+    )
+    source_blocks: list[str] = []
+    for src in sources:
+        excerpt = src.markdown[:12000]
+        source_blocks.append(
+            f"### {src.title}\nURL: {src.url}\nScore: {src.score}\n\n{excerpt}"
+        )
+    sources_section = (
+        "\n\n".join(source_blocks)
+        if source_blocks
+        else "No pre-extracted sources. Use only what you know."
     )
     return f"""You are exe, an experiential explainer agent. Today is {today}.
 
@@ -52,9 +66,10 @@ Write a public-ready article (Option 2 explainer quality): clear, useful to a te
 Style profile: {style or "default concise technical"}
 Already explained concepts (skip or cross-reference): {glossary_block}
 
-Tavily rules:
-- Use TavilySearch to find sources. Pass include_domains at invocation for site targeting (e.g. ["reddit.com"]). Never put site: in the query string.
-- Use TavilyExtract to pull full markdown from chosen URLs.
+Pre-extracted sources (cite these URLs; do not invent sources):
+{sources_section}
+
+Research is already complete. Do not call TavilySearch or TavilyExtract.
 {illustration_rule}
 
 End your final answer with a fenced JSON trailer:

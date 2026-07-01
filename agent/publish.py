@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import os
 import re
+import subprocess
 from pathlib import Path
 
 from github import Auth, Github
@@ -61,6 +62,26 @@ def write_artifact_folder(
     return folder
 
 
+def resolve_github_repo() -> str:
+    """Resolve owner/repo from GITHUB_REPO, git remote origin, or default."""
+    configured = os.getenv("GITHUB_REPO", "").strip()
+    if configured:
+        return configured
+    try:
+        remote = subprocess.run(
+            ["git", "remote", "get-url", "origin"],
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout.strip()
+        match = re.search(r"github\.com[:/](?P<owner>[^/]+)/(?P<repo>[^/.]+)", remote)
+        if match:
+            return f"{match.group('owner')}/{match.group('repo')}"
+    except Exception:
+        pass
+    return "rockangator/exe"
+
+
 def publish_to_github(
     folder: Path,
     *,
@@ -70,9 +91,7 @@ def publish_to_github(
 ) -> str:
     """Commit article.md and index.md via PyGithub; return public article URL."""
     token = os.environ["GITHUB_TOKEN"]
-    repo_name = repo_name or os.environ.get("GITHUB_REPO", "")
-    if not repo_name:
-        raise ValueError("GITHUB_REPO env var required (format: owner/repo)")
+    repo_name = repo_name or resolve_github_repo()
 
     gh = Github(auth=Auth.Token(token))
     repo = gh.get_repo(repo_name)

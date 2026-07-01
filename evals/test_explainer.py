@@ -30,4 +30,4 @@ def test_build_system_prompt_includes_date_and_glossary() -> None:
     )
     assert "2026-07-01" in prompt
     assert "event horizon" in prompt
-    assert "include_domains" in prompt
+    assert "Pre-extracted sources" in prompt

@@ -138,8 +138,17 @@ def run_pipeline(
         if not optional_env("GITHUB_TOKEN", feature="GitHub publish"):
             console.print("[dim]Skipping publish: GITHUB_TOKEN not set[/dim]")
         else:
-            url = stage_publish(folder, slug=slug)
-            console.print(Panel(f"[link={url}]{url}[/link]", title="Published", border_style="green"))
+            try:
+                url = stage_publish(folder, slug=slug)
+                console.print(Panel(f"[link={url}]{url}[/link]", title="Published", border_style="green"))
+            except Exception as exc:
+                console.print(
+                    Panel(
+                        f"Local artifact saved at {folder}\nPublish failed: {exc}",
+                        title="Publish failed",
+                        border_style="red",
+                    )
+                )
 
     return RunRecord(
         topic=topic,

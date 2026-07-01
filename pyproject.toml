@@ -1,10 +1,11 @@
 [project]
-name = "research-explainer-agent"
+name = "exe"
 version = "0.1.0"
-description = "Tavily FDE take-home: research-to-published explainer agent"
+description = "Experiential explainer: research to published cited artifact"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "google-genai>=1.0.0",
     "langchain>=1.0.0",
     "langchain-nebius>=0.1.0",
     "langchain-tavily>=0.2.0",
@@ -16,7 +17,25 @@ dependencies = [
     "typer>=0.12.0",
 ]
 
+[project.scripts]
+exe = "agent.cli:app"
+
 [dependency-groups]
-dev = [
-    "pytest>=8.0.0",
+dev = ["pytest>=8.0.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["evals"]
+markers = [
+    "live: tests that call live APIs (excluded from default CI run)",
 ]
+addopts = "-m 'not live'"
+
+[tool.uv]
+package = true
+
+[build-system]
+requires = ["setuptools>=75.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["agent*"]

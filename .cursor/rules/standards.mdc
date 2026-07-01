@@ -1,0 +1,15 @@
+---
+description: exe agent conventions for Python modules
+globs: ["**/*.py"]
+alwaysApply: true
+---
+
+# exe standards
+
+uv + Python 3.11+, pytest. Never pip. langchain-tavily only; deprecated community Tavily tool forbidden.
+
+TavilySearch: `include_raw_content=True` and `max_results` at instantiation only. Domain targeting via `include_domains` at invocation, never `site:` strings. TavilyExtract: `extract_depth="advanced"`, `format="markdown"`. Extracted markdown feeds artifacts with zero transformation.
+
+Mem0: platform `MemoryClient` only. `add(messages, user_id=...)` and `search(query, filters={"user_id": ...})`. `add()` is async extraction; never read-after-write same run. Store style configs and glossary only, never raw Tavily content.
+
+Keys from env only; never hardcode or print secrets. `from __future__ import annotations`, full type hints, docstring contract on public functions. One responsibility per module. rich console, typer CLI. Today's date in system prompt. LangSmith via `LANGSMITH_*`, endpoint api.smith.langchain.com. Punchy prose, no em dashes. Done = contract + green test + clean uv run. Never invent APIs; stop and ask if unsure.

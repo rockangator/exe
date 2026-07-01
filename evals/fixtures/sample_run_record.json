@@ -1,0 +1,14 @@
+{
+  "topic": "black holes",
+  "slug": "black-holes",
+  "sources": [
+    {
+      "url": "https://example.com/black-holes",
+      "title": "Black Holes",
+      "markdown": "# Black Holes",
+      "score": 0.9
+    }
+  ],
+  "article_body": "",
+  "concepts": []
+}

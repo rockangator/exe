@@ -98,21 +98,28 @@ def publish_to_github(
     rel = folder.name
 
     urls: list[str] = []
-    for name in ("article.md", "index.md"):
-        local = folder / name
-        path = f"published/{rel}/{name}"
-        content = local.read_text(encoding="utf-8")
+    upload_paths: list[Path] = [folder / "article.md", folder / "index.md"]
+    assets_dir = folder / "assets"
+    if assets_dir.is_dir():
+        upload_paths.extend(sorted(assets_dir.glob("*")))
+
+    for local in upload_paths:
+        if not local.is_file():
+            continue
+        if local.parent.name == "assets":
+            path = f"published/{rel}/assets/{local.name}"
+        else:
+            path = f"published/{rel}/{local.name}"
+        is_binary = local.suffix.lower() in {".png", ".jpg", ".jpeg", ".webp"}
+        content: str | bytes = local.read_bytes() if is_binary else local.read_text(encoding="utf-8")
         try:
             existing = repo.get_contents(path, ref=branch)
-            repo.update_file(
-                path,
-                f"publish: {slug} ({name})",
-                content,
-                existing.sha,
-                branch=branch,
-            )
+            repo.update_file(path, f"publish: {slug} ({local.name})", content, existing.sha, branch=branch)
         except Exception:
-            repo.create_file(path, f"publish: {slug} ({name})", content, branch=branch)
-        urls.append(f"https://github.com/{repo_name}/blob/{branch}/{path}")
+            repo.create_file(path, f"publish: {slug} ({local.name})", content, branch=branch)
+        if local.name == "article.md":
+            urls.append(f"https://github.com/{repo_name}/blob/{branch}/{path}")
 
+    if not urls:
+        urls.append(f"https://github.com/{repo_name}/blob/{branch}/published/{rel}/article.md")
     return urls[0]

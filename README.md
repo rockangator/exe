@@ -14,7 +14,7 @@ Ian Xiaohei `illustrate` tool call embedded in the article:
 
 ![illustrate tool call with structure_type and xiaohei_action](docs/demo/illustrate-tool.png)
 
-Example output: [published/2026-07-01-what-are-sea-lions/article.md](published/2026-07-01-what-are-sea-lions/article.md)
+**Example output:** [published/2026-07-01-what-are-sea-lions/article.md](published/2026-07-01-what-are-sea-lions/article.md)
 
 ## Quickstart
 

@@ -13,7 +13,7 @@ A CLI research agent built on the take-home starter's bones: LangChain's `create
 Give it a topic. It finds and extracts the best source, drafts an explainer in your remembered style, skips concepts you have already taught it, generates hand-drawn illustrations, and commits the finished markdown to GitHub. Every claim carries its source. Every stage carries a trace.
 
 
-**Example output:** [published/2026-07-01-what-are-sea-lions/article.md](published/2026-07-01-what-are-sea-lions/article.md)
+**Example output:** [What are sea lions?](https://github.com/rockangator/exe/blob/main/published/2026-07-01-what-are-sea-lions/article.md)
 
 
 

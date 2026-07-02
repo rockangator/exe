@@ -104,7 +104,7 @@ def run_pipeline(
     illustrate_enabled = optional_env("GEMINI_API_KEY", feature="Illustration")
     tools: list[object] = []
     if illustrate_enabled:
-        tools.append(build_illustrate_tool(assets_dir=assets_dir))
+        tools.append(build_illustrate_tool(assets_dir=assets_dir, article_theme=topic))
 
     system_prompt = build_system_prompt(
         style=style,

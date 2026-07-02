@@ -44,7 +44,10 @@ def build_system_prompt(
     sources = sources or []
     glossary_block = ", ".join(glossary) if glossary else "none yet"
     illustration_rule = (
-        "Generate 1-3 illustrations via the illustrate tool; embed paths in the article."
+        "Generate 1-3 illustrations via illustrate(core_idea, structure_type, xiaohei_action, slug, labels). "
+        "Pick structure_type from Workflow, System Fragment, Before/After Contrast, Character State, "
+        "Conceptual Metaphor, Layered Method, Route Map, Small Comic Sequence. "
+        "Embed returned assets paths in the article."
         if illustrate
         else "Do not call illustrate."
     )

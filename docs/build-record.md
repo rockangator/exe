@@ -7,7 +7,7 @@ Superpowers methodology: brainstorm to design doc, design doc to task-level
 plan, plan to execution with per-task verification. Every third-party SDK was
 validated in isolation with one real call before anything was built on it.
 
-Complete traces: [Traces](https://traces.com/s/jn7827mq05azyzw1vt1718f2cs89r4vj)
+Complete traces: [Traces](https://traces.com/s/jn7501whf555rarz09m8w59rdn89vmty)
 
 ## Milestones
 
@@ -52,6 +52,6 @@ Complete traces: [Traces](https://traces.com/s/jn7827mq05azyzw1vt1718f2cs89r4vj)
 
 ## Build session trace
 
-Published to [Traces](https://traces.com): [https://traces.com/s/jn7827mq05azyzw1vt1718f2cs89r4vj](https://traces.com/s/jn7827mq05azyzw1vt1718f2cs89r4vj)
+Published to [Traces](https://traces.com): [https://traces.com/s/jn7501whf555rarz09m8w59rdn89vmty](https://traces.com/s/jn7501whf555rarz09m8w59rdn89vmty)
 
-Visibility: direct (link-only). Agent: Cursor. Trace ID: `005be0ef-110c-47ec-8fa0-e3cad690a07c`.
+Visibility: direct (link-only). Agent: Cursor. Trace ID: `7a6ad16e-b8a0-425e-a19a-11b5ec34700d`.
